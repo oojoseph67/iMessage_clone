@@ -1,0 +1,10 @@
+- first create project
+- create google auth
+- set database 
+    - create PRISMA file
+    - link it up to the database (mongo)
+    - generate PRISMA
+- 
+
+
+// we are using NEXTAUTH.js for providers and adapters
