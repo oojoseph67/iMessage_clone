@@ -4,7 +4,8 @@
     - create PRISMA file
     - link it up to the database (mongo)
     - generate PRISMA
-- 
+- set up styling framework
+- setting up frontend view
 
 
 // we are using NEXTAUTH.js for providers and adapters
