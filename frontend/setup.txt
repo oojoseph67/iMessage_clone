@@ -5,7 +5,9 @@
     - link it up to the database (mongo)
     - generate PRISMA
 - set up styling framework
-- setting up frontend view
+- setting up frontend view (auth page)
+- setting up apollo graphQL
+
 
 
 // we are using NEXTAUTH.js for providers and adapters
