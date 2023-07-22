@@ -4,19 +4,43 @@ import React, { useState } from "react";
 import { Button, Center, Stack, Text, Image, Input } from "@chakra-ui/react";
 import { signIn } from "next-auth/react";
 
+import UserOperations from "../../graphql/operations/user";
+import { gql, useMutation, useQuery } from "@apollo/client";
+
 interface AuthProps {
   session: Session | null;
   reloadSession: () => void; // fetches data from the database after a username once created
 }
 
+interface CreateUsernameData {
+  createUsername: {
+    success: boolean;
+    error: string;
+  };
+}
+
+interface CreateUsernameVariables {
+  username: string;
+}
+
 const Auth: React.FC<AuthProps> = ({ session, reloadSession }) => {
   const [username, setUsername] = useState("");
 
+  const [createUsername, { data, loading, error }] = useMutation<
+    CreateUsernameData,
+    CreateUsernameVariables
+  >(UserOperations.Mutations.createUsername);
+
+  console.log("🚀 ~ file: auth.tsx:34 ~ error:", error);
+  console.log("🚀 ~ file: auth.tsx:35 ~ loading:", loading);
+  console.log("🚀 ~ file: auth.tsx:36 ~ data:", data);
+
   const onSubmit = async () => {
+    if (!username) return;
     try {
-        // create a graphQL mutation
+      await createUsername({ variables: { username: username } });
     } catch (error) {
-      console.log("🚀 ~ file: auth.tsx:19 ~ onSubmit ~ error:", error);
+      console.error("🚀 ~ file: auth.tsx:19 ~ onSubmit ~ error:", error);
     }
   };
 
@@ -25,13 +49,17 @@ const Auth: React.FC<AuthProps> = ({ session, reloadSession }) => {
       <Stack spacing={10} align="center">
         {session ? (
           <>
-            <Text fontSize="3xl">Create a Username</Text>
+            <Text fontSize="3xl">
+              Create a Username {session?.user.name}
+            </Text>
             <Input
               placeholder="Enter Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <Button width="100%" onClick={onSubmit}>Save</Button>
+            <Button width="100%" onClick={onSubmit}>
+              Save
+            </Button>
           </>
         ) : (
           <>

@@ -1,5 +1,7 @@
 import type { NextPage, NextPageContext } from "next";
 import { getSession, useSession } from "next-auth/react";
+import { authOptions } from "./api/auth/[...nextauth]";
+import { getServerSession } from "next-auth/next";
 
 import { Box } from "@chakra-ui/react";
 
@@ -24,11 +26,11 @@ const Home: NextPage = () => {
 };
 
 // adding server rending
-export async function getServerSideProps(context: NextPageContext) {
+export async function getServerSideProps(context: any) {
   // do something with session here if needed...
   // since we are on the server sides hooks been called are different
 
-  const session = await getSession(context);
+  const session = await getServerSession(context.req, context.res, authOptions);
 
   return {
     props: {

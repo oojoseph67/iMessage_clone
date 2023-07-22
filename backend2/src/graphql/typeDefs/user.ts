@@ -1,3 +1,5 @@
+// import { gql } from "apollo-server-core"
+
 const typeDefs = `#graphql
     type User {
         id: String
