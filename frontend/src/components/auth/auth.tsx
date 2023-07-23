@@ -7,6 +7,9 @@ import { signIn } from "next-auth/react";
 import UserOperations from "../../graphql/operations/user";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
+import toast from "react-hot-toast";
+
+
 interface AuthProps {
   session: Session | null;
   reloadSession: () => void; // fetches data from the database after a username once created
@@ -38,8 +41,33 @@ const Auth: React.FC<AuthProps> = ({ session, reloadSession }) => {
   const onSubmit = async () => {
     if (!username) return;
     try {
-      await createUsername({ variables: { username: username } });
-    } catch (error) {
+      const { data: response } = await createUsername({
+        variables: { username: username },
+      });
+
+      setUsername("");
+
+      if (!response?.createUsername) {
+        throw new Error();
+      }
+
+      if (data?.createUsername.error) {
+        const {
+          createUsername: { error },
+        } = response;
+        throw new Error(error);
+      }
+
+      /**
+       * Reload session to obtain new username
+       */
+
+      toast.success("Username successfully created! 🚀🚀")
+
+      reloadSession();
+    } catch (error: any) {
+      toast.error(error?.message);
+      setUsername("")
       console.error("🚀 ~ file: auth.tsx:19 ~ onSubmit ~ error:", error);
     }
   };
@@ -49,15 +77,13 @@ const Auth: React.FC<AuthProps> = ({ session, reloadSession }) => {
       <Stack spacing={10} align="center">
         {session ? (
           <>
-            <Text fontSize="3xl">
-              Create a Username {session?.user.name}
-            </Text>
+            <Text fontSize="3xl">Create a Username {session?.user.name}</Text>
             <Input
               placeholder="Enter Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <Button width="100%" onClick={onSubmit}>
+            <Button width="100%" disabled={loading} onClick={onSubmit}>
               Save
             </Button>
           </>

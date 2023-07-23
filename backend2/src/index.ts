@@ -13,6 +13,8 @@ import typeDefs from "./graphql/typeDefs";
 import resolvers from "./graphql/resolvers";
 
 import * as dotenv from "dotenv";
+import GraphQLContext, { Session } from "./util/types";
+import { PrismaClient } from "@prisma/client";
 
 async function main() {
   dotenv.config();
@@ -30,15 +32,19 @@ async function main() {
     credentials: true,
   };
 
+  // Context Parameters
+
+  const prisma = new PrismaClient();
+
   const server = new ApolloServer({
     schema,
     csrfPrevention: true,
     cache: "bounded",
-    context: async ({ req, res }) => {
-      const session = await getSession({ req });
-      // console.log("CONTEXT SESSION", session);
+    context: async ({ req, res }): Promise<GraphQLContext> => {
+      const session = await getSession({ req }) as Session
       return {
         session: session,
+        prisma: prisma,
       };
     },
     plugins: [

@@ -19,6 +19,6 @@ const typeDefs = `#graphql
         error: String
     }
 
-`
+`;
 
-export default typeDefs
+export default typeDefs;

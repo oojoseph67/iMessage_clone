@@ -12,7 +12,10 @@ const Home: NextPage = () => {
   const { data: session } = useSession();
   console.log("🚀 ~ file: index.tsx:6 ~ data:", session);
 
-  const reloadSession = () => {};
+  const reloadSession = () => {
+    const event = new Event("visibilitychange");
+    document.dispatchEvent(event);
+  };
 
   return (
     <Box>

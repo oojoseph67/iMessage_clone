@@ -4,7 +4,7 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
+  provider        = "prisma-client-js" 
 }
 
 model Account {
@@ -53,3 +53,4 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
