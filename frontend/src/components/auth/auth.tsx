@@ -9,7 +9,6 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 
 import toast from "react-hot-toast";
 
-
 interface AuthProps {
   session: Session | null;
   reloadSession: () => void; // fetches data from the database after a username once created
@@ -62,12 +61,12 @@ const Auth: React.FC<AuthProps> = ({ session, reloadSession }) => {
        * Reload session to obtain new username
        */
 
-      toast.success("Username successfully created! 🚀🚀")
+      toast.success("Username successfully created! 🚀🚀");
 
       reloadSession();
     } catch (error: any) {
       toast.error(error?.message);
-      setUsername("")
+      setUsername("");
       console.error("🚀 ~ file: auth.tsx:19 ~ onSubmit ~ error:", error);
     }
   };
@@ -83,7 +82,11 @@ const Auth: React.FC<AuthProps> = ({ session, reloadSession }) => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <Button width="100%" disabled={loading} onClick={onSubmit}>
+            <Button
+              width="100%"
+              disabled={loading}
+              onClick={onSubmit}
+              isLoading={loading}>
               Save
             </Button>
           </>
