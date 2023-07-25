@@ -1,12 +1,8 @@
 import {
-  Avatar,
-  AvatarBadge,
   Button,
   Flex,
   Stack,
   Text,
-  Wrap,
-  WrapItem,
 } from "@chakra-ui/react";
 import React from "react";
 
@@ -18,9 +14,13 @@ interface SearchedUser {
 
 interface UserSearchListProps {
   users: Array<SearchedUser>;
+  addParticipant: (user: SearchedUser) => void // we need to make know what this function accepts and what the function rejects
 }
 
-const UserSearchList: React.FC<UserSearchListProps> = ({ users }) => {
+const UserSearchList: React.FC<UserSearchListProps> = ({
+  users,
+  addParticipant
+}) => {
   return (
     <>
       {users.length === 0 ? (
@@ -52,7 +52,7 @@ const UserSearchList: React.FC<UserSearchListProps> = ({ users }) => {
                 <Button
                   bg="brand.100"
                   _hover={{ bg: "brand.100" }}
-                  onClick={() => {}}>
+                  onClick={() => addParticipant(user)}>
                   Select
                 </Button>
               </Flex>

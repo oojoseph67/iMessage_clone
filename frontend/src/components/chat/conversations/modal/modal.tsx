@@ -14,12 +14,15 @@ import React, { useState } from "react";
 import UserOperations from "../../../../graphql/operations/user";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import UserSearchList from "./userSearchList";
+import Participant from "./participant.";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   username: string;
   setUsername: any;
+  participants: any
+  setParticipants: any
 }
 
 interface SearchedUser {
@@ -41,7 +44,11 @@ const ConversationModal: React.FC<ModalProps> = ({
   onClose,
   username,
   setUsername,
+  participants,
+  setParticipants
 }) => {
+  // const [participants, setParticipants] = useState<Array<SearchedUser>>([]);
+
   const [searchUsers, { data, error, loading }] = useLazyQuery<
     SearchUsersData,
     SearchUsersInput
@@ -58,6 +65,17 @@ const ConversationModal: React.FC<ModalProps> = ({
     } catch (error: any) {
       console.error("error while searching");
     }
+  };
+
+  const addParticipant = (user: SearchedUser) => {
+    setParticipants((prev: any[]) => [...prev, user]).filter()
+    setUsername("");
+  };
+
+  // NB: prev = previous (more like a mapping function)
+
+  const removeParticipant = (userId: string) => {
+    setParticipants((prev: any[]) => prev.filter((p) => p.id !== userId));
   };
 
   return (
@@ -82,7 +100,20 @@ const ConversationModal: React.FC<ModalProps> = ({
               </Stack>
             </form>
 
-            {data?.searchUsers && <UserSearchList users={data?.searchUsers} />}
+            {data?.searchUsers && (
+              <UserSearchList
+                users={data?.searchUsers}
+                addParticipant={addParticipant}
+              />
+            )}
+            {participants.length !== 0 && (
+              <>
+                <Participant
+                  participants={participants}
+                  removeParticipant={removeParticipant}
+                />
+              </>
+            )}
           </ModalBody>
         </ModalContent>
       </Modal>
