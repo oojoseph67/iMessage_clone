@@ -8,11 +8,14 @@ interface ConversationsListProps {
 }
 
 const ConversationsList: React.FC<ConversationsListProps> = ({ session }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [username, setUsername] = useState("");
 
-  const [isOpen, setIsOpen] = useState(false)
-
-  const onOpen = () => setIsOpen(true)
-  const onClose = () => setIsOpen(false);
+  const onOpen = () => setIsOpen(true);
+  const onClose = () => {
+    setIsOpen(false);
+    setUsername("");
+  };
 
   return (
     <Box width="100%">
@@ -20,16 +23,20 @@ const ConversationsList: React.FC<ConversationsListProps> = ({ session }) => {
         py={2}
         px={4}
         mb={4}
-        bg='blackAlpha.300'
+        bg="blackAlpha.300"
         borderRadius={4}
         cursor="pointer"
-        onClick={onOpen}
-      >
+        onClick={onOpen}>
         <Text>Find or start a conversation</Text>
       </Box>
-      <ConversationModal isOpen={isOpen} onClose={onClose} />
+      <ConversationModal
+        username={username}
+        setUsername={setUsername}
+        isOpen={isOpen}
+        onClose={onClose}
+      />
     </Box>
-  )
+  );
 };
 
 export default ConversationsList;

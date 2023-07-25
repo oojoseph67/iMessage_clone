@@ -11,21 +11,52 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import UserOperations from "../../../../graphql/operations/user";
+import { useLazyQuery, useQuery } from "@apollo/client";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
+  username: string;
+  setUsername: any;
 }
 
-const ConversationModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
-    const [username, setUsername] = useState("");
+interface SearchedUser {
+  id: string;
+  username: string;
+}
 
-    const onSearch = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if(!username) return
-        // search user names
-        console.log("onsubmit")
+interface SearchUsersData {
+  searchUsers: Array<SearchedUser>;
+}
+
+interface SearchUsersInput {
+  username: string;
+}
+
+const ConversationModal: React.FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  username,
+  setUsername,
+}) => {
+  const [searchUsers, { data, error, loading }] = useLazyQuery<
+    SearchUsersData,
+    SearchUsersInput
+  >(UserOperations.Queries.searchUsers);
+  // useQuery fires on render while useLazyQuery fires when queried
+
+  console.log("🚀 ~ file: modal.tsx:44 ~ data:", data);
+
+  const onSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!username) return;
+    try {
+      searchUsers({ variables: { username } });
+    } catch (error: any) {
+      console.error("error while searching");
     }
+  };
 
   return (
     <>
@@ -42,7 +73,7 @@ const ConversationModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                   value={username}
                   onChange={(event) => setUsername(event.target.value)}
                 />
-                <Button type="submit" disabled={!username}>
+                <Button type="submit" disabled={!username} isLoading={loading}>
                   {" "}
                   Submit{" "}
                 </Button>
