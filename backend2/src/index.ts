@@ -41,7 +41,7 @@ async function main() {
     csrfPrevention: true,
     cache: "bounded",
     context: async ({ req, res }): Promise<GraphQLContext> => {
-      const session = await getSession({ req }) as Session
+      const session = (await getSession({ req })) as Session;
       return {
         session: session,
         prisma: prisma,

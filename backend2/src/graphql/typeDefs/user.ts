@@ -4,6 +4,7 @@ const typeDefs = `#graphql
     type User {
         id: String
         username: String
+        image: String
     }
 
     type Query {

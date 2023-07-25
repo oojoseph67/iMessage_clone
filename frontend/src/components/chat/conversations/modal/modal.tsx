@@ -13,6 +13,7 @@ import {
 import React, { useState } from "react";
 import UserOperations from "../../../../graphql/operations/user";
 import { useLazyQuery, useQuery } from "@apollo/client";
+import UserSearchList from "./userSearchList";
 
 interface ModalProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ interface ModalProps {
 interface SearchedUser {
   id: string;
   username: string;
+  image: string;
 }
 
 interface SearchUsersData {
@@ -63,7 +65,7 @@ const ConversationModal: React.FC<ModalProps> = ({
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent bg="#2d2d2d" pb={4}>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Create/Search Conversation</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <form onSubmit={onSearch}>
@@ -79,6 +81,8 @@ const ConversationModal: React.FC<ModalProps> = ({
                 </Button>
               </Stack>
             </form>
+
+            {data?.searchUsers && <UserSearchList users={data?.searchUsers} />}
           </ModalBody>
         </ModalContent>
       </Modal>
