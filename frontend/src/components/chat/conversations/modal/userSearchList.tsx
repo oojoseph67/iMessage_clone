@@ -5,12 +5,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import React from "react";
-
-interface SearchedUser {
-  id: string;
-  username: string;
-  image: string;
-}
+import { SearchedUser } from "../../../../utils/types";
 
 interface UserSearchListProps {
   users: Array<SearchedUser>;

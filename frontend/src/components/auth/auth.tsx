@@ -8,21 +8,11 @@ import UserOperations from "../../graphql/operations/user";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 import toast from "react-hot-toast";
+import { CreateUsernameData, CreateUsernameVariables } from "../../utils/types";
 
 interface AuthProps {
   session: Session | null;
   reloadSession: () => void; // fetches data from the database after a username once created
-}
-
-interface CreateUsernameData {
-  createUsername: {
-    success: boolean;
-    error: string;
-  };
-}
-
-interface CreateUsernameVariables {
-  username: string;
 }
 
 const Auth: React.FC<AuthProps> = ({ session, reloadSession }) => {

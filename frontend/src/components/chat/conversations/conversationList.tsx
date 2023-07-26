@@ -2,12 +2,7 @@ import React, { useState } from "react";
 import { Session } from "next-auth";
 import { Box, Text } from "@chakra-ui/react";
 import ConversationModal from "./modal/modal";
-
-interface SearchedUser {
-  id: string;
-  username: string;
-  image: string;
-}
+import { SearchedUser } from "../../../utils/types";
 
 interface ConversationsListProps {
   session: Session;
@@ -39,6 +34,7 @@ const ConversationsList: React.FC<ConversationsListProps> = ({ session }) => {
         <Text>Find or start a conversation</Text>
       </Box>
       <ConversationModal
+        session={session}
         username={username}
         setUsername={setUsername}
         participants={participants}
