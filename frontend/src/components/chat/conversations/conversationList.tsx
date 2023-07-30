@@ -3,22 +3,28 @@ import { Session } from "next-auth";
 import { Box, Text } from "@chakra-ui/react";
 import ConversationModal from "./modal/modal";
 import { SearchedUser } from "../../../utils/types";
+import { ConversationPopulated } from "../../../../../backend2/src/util/types";
+import ConversationItem from "./conversationItem";
 
 interface ConversationsListProps {
   session: Session;
+  conversations: Array<ConversationPopulated>;
 }
 
-const ConversationsList: React.FC<ConversationsListProps> = ({ session }) => {
+const ConversationsList: React.FC<ConversationsListProps> = ({
+  session,
+  conversations,
+}) => {
+  console.log("🚀 ~ file: conversationList.tsx:18 ~ conversations:", conversations)
   const [isOpen, setIsOpen] = useState(false);
   const [username, setUsername] = useState("");
   const [participants, setParticipants] = useState<Array<SearchedUser>>([]);
-
 
   const onOpen = () => setIsOpen(true);
   const onClose = () => {
     setIsOpen(false);
     setUsername("");
-    setParticipants([])
+    setParticipants([]);
   };
 
   return (
@@ -31,7 +37,9 @@ const ConversationsList: React.FC<ConversationsListProps> = ({ session }) => {
         borderRadius={4}
         cursor="pointer"
         onClick={onOpen}>
-        <Text>Find or start a conversation</Text>
+        <Text textAlign="center" color="whiteAlpha.800" fontWeight={500}>
+          Find or start a conversation
+        </Text>
       </Box>
       <ConversationModal
         session={session}
@@ -42,6 +50,9 @@ const ConversationsList: React.FC<ConversationsListProps> = ({ session }) => {
         isOpen={isOpen}
         onClose={onClose}
       />
+      {conversations.map((conversation) => (
+        <ConversationItem key={conversation.id} conversation={conversation} />
+      ))}
     </Box>
   );
 };

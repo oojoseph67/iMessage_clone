@@ -13,16 +13,15 @@ interface ConversationsWrapperProps {
 const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({
   session,
 }) => {
-
   const {
     data: conversationsData,
     error: conversationsError,
     loading: conversationsLoading,
-  } = useQuery<ConversationsData>(ConversationOperations.Queries.conversations)
-    console.log(
-      "🚀 ~ file: conversationsWrapper.tsx:22 ~ data:",
-      conversationsData
-    );
+  } = useQuery<ConversationsData>(ConversationOperations.Queries.conversations);
+  console.log(
+    "🚀 ~ file: conversationsWrapper.tsx:22 ~ data:",
+    conversationsData
+  );
 
   return (
     <Box
@@ -32,7 +31,10 @@ const ConversationsWrapper: React.FC<ConversationsWrapperProps> = ({
       py={6}
       px={3}>
       {/* Skeleton Loader */}
-      <ConversationsList session={session} />
+      <ConversationsList
+        session={session}
+        conversations={conversationsData?.conversations || []}
+      />
     </Box>
   );
 };
