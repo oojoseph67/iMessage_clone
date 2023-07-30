@@ -25,6 +25,7 @@ import {
 } from "../../../../utils/types";
 import ConversationOperations from "../../../../graphql/operations/conversation";
 import { Session } from "next-auth";
+import { useRouter } from "next/router";
 
 interface ModalProps {
   session: Session;
@@ -47,6 +48,8 @@ const ConversationModal: React.FC<ModalProps> = ({
 }) => {
   // const [participants, setParticipants] = useState<Array<SearchedUser>>([]);
   // const { user: { id: userId }} = session
+
+  const router = useRouter()
 
   const userId = session?.user?.id
 
@@ -82,7 +85,27 @@ const ConversationModal: React.FC<ModalProps> = ({
           participantIds: transformParticipantId,
         },
       });
+      
       console.log("🚀 ~ file: modal.tsx:84 ~ onCreateConversation ~ data:", data)
+
+      if (!data?.createConversation) {
+        throw new Error("Failed to create conversation")
+      }
+      
+      const { createConversation: { conversationId } } = data
+
+      router.push({ query: { conversationId } })
+
+      /**
+       * Clear state and close modal 
+       * on successful creation
+       */
+
+      setParticipants([])
+      setUsername("")
+      onClose()
+
+
     } catch (error: any) {
       console.error(
         "🚀 ~ file: modal.tsx:74 ~ onCreateConversation ~ error:",

@@ -1,3 +1,5 @@
+import {ConversationPopulated } from '../../../backend2/src/util/types'
+
 /**
  * User interfaces
  */
@@ -30,6 +32,10 @@ export interface SearchUsersInput {
 /**
  * Conversations
  */
+
+export interface ConversationsData {
+  conversation: Array<ConversationPopulated>
+}
 
 export interface CreateConversationData {
     createConversation: {
