@@ -5,20 +5,29 @@ import ConversationModal from "./modal/modal";
 import { SearchedUser } from "../../../utils/types";
 import { ConversationPopulated } from "../../../../../backend2/src/util/types";
 import ConversationItem from "./conversationItem";
+import { useRouter } from "next/router";
 
 interface ConversationsListProps {
   session: Session;
   conversations: Array<ConversationPopulated>;
+  onViewConversation: (conversationId: string) => void
 }
 
 const ConversationsList: React.FC<ConversationsListProps> = ({
   session,
   conversations,
+  onViewConversation,
 }) => {
-  console.log("🚀 ~ file: conversationList.tsx:18 ~ conversations:", conversations)
+  console.log(
+    "🚀 ~ file: conversationList.tsx:18 ~ conversations:",
+    conversations
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [username, setUsername] = useState("");
   const [participants, setParticipants] = useState<Array<SearchedUser>>([]);
+
+  const router = useRouter();
+  const { user: { id: userId } } = session
 
   const onOpen = () => setIsOpen(true);
   const onClose = () => {
@@ -51,7 +60,13 @@ const ConversationsList: React.FC<ConversationsListProps> = ({
         onClose={onClose}
       />
       {conversations.map((conversation) => (
-        <ConversationItem key={conversation.id} conversation={conversation} />
+        <ConversationItem
+          key={conversation.id}
+          userId={userId}
+          conversation={conversation}
+          onClick={() => onViewConversation(conversation.id)}
+          isSelected={conversation.id === router.query.conversationId}
+        />
       ))}
     </Box>
   );

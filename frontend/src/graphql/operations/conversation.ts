@@ -30,16 +30,43 @@ export default {
           updatedAt
         }
       }
-    `
+    `,
   },
   Mutations: {
-      createConversation: gql`
-        mutation CreateConversation($participantIds: [String]!) {
-            createConversation(participantIds: $participantIds) {
-                conversationId
-            }
+    createConversation: gql`
+      mutation CreateConversation($participantIds: [String]!) {
+        createConversation(participantIds: $participantIds) {
+          conversationId
         }
-    `
+      }
+    `,
   },
-  Subscriptions: {},
+  Subscriptions: {
+    conversationCreated: gql`
+      subscription ConversationCreated {
+        conversationCreated {
+          id
+          participants {
+            user {
+              id
+              username
+              image
+            }
+            hasSeenLatestMessage
+          }
+          latestMessage {
+            id
+            sender {
+              id
+              username
+              image
+            }
+            body
+            createdAt
+          }
+          updatedAt
+        }
+      }
+    `,
+  },
 };

@@ -34,7 +34,7 @@ export interface SearchUsersInput {
  */
 
 export interface ConversationsData {
-  conversation: Array<ConversationPopulated>
+  conversations: Array<ConversationPopulated>
 }
 
 export interface CreateConversationData {

@@ -1,6 +1,7 @@
 import { ApolloError } from "apollo-server-core";
 import GraphQLContext, { ConversationPopulated } from "../../util/types";
 import { Prisma } from "@prisma/client";
+import { withFilter } from "graphql-subscriptions";
 
 const resolvers = {
   Query: {
@@ -24,7 +25,7 @@ const resolvers = {
          * find all conversation of the user using prisma
          */
 
-        const conversation = await prisma.conversation.findMany({
+        const conversations = await prisma.conversation.findMany({
           // where: {
           //   participants: {
           //     some: {
@@ -36,12 +37,13 @@ const resolvers = {
           // },
           include: conversationPopulated,
         });
+        console.log("🚀 ~ file: conversations.ts:40 ~ conversations:", conversations)
 
         /**
          * our custom query since there is a bug in the above query function
          */
 
-        return conversation.filter(
+        return conversations.filter(
           (conversation) =>
             !!conversation.participants.find((p: any) => p.userId === userId)
         );
@@ -57,7 +59,7 @@ const resolvers = {
       args: { participantIds: Array<string> },
       context: GraphQLContext
     ): Promise<{ conversationId: string }> => {
-      const { session, prisma } = context;
+      const { session, prisma, pubsub } = context;
       const { participantIds } = args;
 
       if (!session?.user) {
@@ -82,6 +84,9 @@ const resolvers = {
         });
 
         // emit a CONVERSATION_CREATED event using pubsub
+        pubsub.publish("CONVERSATION_CREATED", {
+          conversationCreated: conversation,
+        });
 
         return { conversationId: conversation.id };
       } catch (error: any) {
@@ -90,7 +95,42 @@ const resolvers = {
       }
     },
   },
+  Subscription: {
+    conversationCreated: {
+      // subscribe: (_: any, __: any, context: GraphQLContext) => {
+      //   const { pubsub } = context
+
+      //   return pubsub.asyncIterator(['CONVERSATION_CREATED'])
+      // }
+      subscribe: withFilter(
+        (_: any, __: any, context: GraphQLContext) => {
+          const { pubsub } = context;
+          return pubsub.asyncIterator(["CONVERSATION_CREATED"]);
+        },
+        (
+          payload: ConversationCreatedSubscriptionPayload,
+          _,
+          context: GraphQLContext
+        ) => {
+          const { session } = context;
+          const {
+            conversationCreated: { participants },
+          } = payload;
+
+          const userIsParticipant = !!participants.find(
+            (p: any) => p.userId === session?.user?.id
+          );
+
+          return userIsParticipant
+        }
+      ),
+    },
+  },
 };
+
+export interface ConversationCreatedSubscriptionPayload {
+  conversationCreated: ConversationPopulated
+}
 
 export const participantPopulated =
   Prisma.validator<Prisma.ConversationParticipantInclude>()({
